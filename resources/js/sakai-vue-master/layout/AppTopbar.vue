@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/sakai-vue-master/layout/composables/layout';
 import NavLink from "@/Components/NavLink.vue";
+import Menu from "primevue/menu";
 
 const { layoutConfig, onMenuToggle } = useLayout();
 
@@ -14,10 +15,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     unbindOutsideClickListener();
-});
-
-const logoUrl = computed(() => {
-    return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
 });
 
 const onTopBarMenuButton = () => {
@@ -56,13 +53,32 @@ const isOutsideClicked = (event) => {
 
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 };
+
+const menu = ref();
+
+const loginMenuItems = ref([
+    {
+        label: 'Settings',
+        icon: 'pi pi-cog',
+        href: '/auth/user'
+    },
+    {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        href: '/logout'
+    }]);
+
+const toggle = (event) => {
+    menu.value.toggle(event);
+};
+
 </script>
 
 <template>
     <div class="layout-topbar">
         <NavLink href="/" class="layout-topbar-logo">
-            <img :src="logoUrl" alt="logo" />
-            <span>SAKAI</span>
+            <img src="/layout/images/logo.png" alt="logo" />
+            <span>PETCARE</span>
         </NavLink>
 
         <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
@@ -74,17 +90,17 @@ const isOutsideClicked = (event) => {
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i class="pi pi-calendar"></i>
-                <span>Calendar</span>
-            </button>
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
+            <Menu ref="menu" id="overlay_menu" :model="loginMenuItems" :popup="true">
+            <template #item="{ item, props }">
+                <NavLink v-ripple class="flex align-items-center" v-bind="props.action" :href="item.href">
+                    <span :class="item.icon" />
+                    <span class="ml-2">{{ item.label }}</span>
+                </NavLink>
+            </template>
+            </Menu>
+            <button @click="toggle" class="p-link layout-topbar-button">
                 <i class="pi pi-user"></i>
-                <span>Profile</span>
-            </button>
-            <button @click="onSettingsClick()" class="p-link layout-topbar-button">
-                <i class="pi pi-cog"></i>
-                <span>Settings</span>
+                <span>Profile <i class="pi pi-angle-right"></i></span>
             </button>
         </div>
     </div>

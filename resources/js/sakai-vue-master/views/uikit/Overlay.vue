@@ -105,7 +105,7 @@ const confirm = (event) => {
                                 <Column field="name" header="Name" :sortable="true" headerStyle="min-width:12rem;"></Column>
                                 <Column header="Image" headerStyle="min-width:5rem;">
                                     <template #body="slotProps">
-                                        <img :src="'demo/images/product/' + slotProps.data.image" :alt="slotProps.data.image" width="50" class="shadow-2" />
+                                        <img :src="'/demo/images/product/' + slotProps.data.image" :alt="slotProps.data.image" width="50" class="shadow-2" />
                                     </template>
                                 </Column>
                                 <Column field="price" header="Price" :sortable="true" headerStyle="min-width:8rem;">
