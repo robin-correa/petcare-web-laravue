@@ -29,7 +29,7 @@ class ServiceRequest extends FormRequest
             'description' => ['required'],
             'min_price' => ['required', 'integer'],
             'max_price' => ['required', 'integer'],
-            'status' => Rule::enum(Status::class)
+            'status' => ['required', Rule::enum(Status::class)]
         ];
 
         if ($this->isMethod('PUT')) {

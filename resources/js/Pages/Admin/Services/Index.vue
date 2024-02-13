@@ -22,6 +22,7 @@ import debounce from 'lodash/debounce';
 
 const props = defineProps({
     services: Object,
+    errors: Object,
     flash: Object,
     search: String
 })
@@ -102,7 +103,9 @@ const hideDialog = () => {
 
 const saveRecord = () => {
     submitted.value = true;
+
     if (service.value.name && service.value.name.trim() && service.value.min_price && service.value.max_price && service.value.status) {
+
         const postData = {
             name: service.value.name,
             description: service.value.description,
@@ -116,7 +119,6 @@ const saveRecord = () => {
                 onSuccess: () => {
                     reloadDataTable();
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
-
                     serviceDialog.value = false;
                     service.value = {};
                 },
@@ -126,9 +128,15 @@ const saveRecord = () => {
                 onSuccess: () => {
                     reloadDataTable();
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
-
                     serviceDialog.value = false;
                     service.value = {};
+                },
+                onError: errors => {
+                    if (errors) {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Validation failed', life: 3000 });
+                    } else {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Oops, something went wrong. Please try again later.', life: 3000 });
+                    }
                 },
             });
         }
@@ -240,39 +248,46 @@ const deleteRecord = () => {
                     class="p-fluid">
                     <div class="field">
                         <label for="name">Name</label>
-                        <InputText id="name" v-model.trim="service.name" required="true" name="name" autofocus
-                            autocomplete="true" :class="{ 'p-invalid': submitted && !service.name }" />
-                        <small class="p-invalid" v-if="submitted && !service.name">Name is required.</small>
+                        <InputText id="name" v-model.trim="service.name" name="name" autofocus autocomplete="true"
+                            :class="{ 'p-invalid': submitted && errors && errors.name || !service.name }" />
+                        <small class="p-error" v-if="submitted && errors && errors.name">{{ errors.name }}</small>
+                        <small class="p-error" v-if="submitted && !service.name">Name is required</small>
                     </div>
                     <div class="field">
                         <label for="description">Description</label>
-                        <Textarea id="description" v-model="service.description" required="true" name="description" rows="3"
-                            cols="20" />
+                        <Textarea id="description" v-model="service.description" name="description" rows="3" cols="20"
+                            :class="{ 'p-invalid': submitted && errors && errors.description || !service.description }" />
+                        <small class="p-error" v-if="submitted && errors && errors.description">{{ errors.description
+                        }}</small>
+                        <small class="p-error" v-if="submitted && !service.description">Description is required</small>
                     </div>
 
                     <div class="formgrid grid">
                         <div class="field col">
                             <label for="min_price">Minimum Price</label>
-                            <InputText id="min_price" v-model="service.min_price"
-                                :class="{ 'p-invalid': submitted && !service.min_price }" :required="true"
-                                name="min_price" />
-                            <small class="p-invalid" v-if="submitted && !service.min_price">Minimum price is
-                                required.</small>
+                            <InputText id="min_price" v-model="service.min_price" name="min_price"
+                                :class="{ 'p-invalid': submitted && errors && errors.min_price || !service.min_price }" />
+                            <small class="p-error" v-if="submitted && errors && errors.min_price">{{ errors.min_price
+                            }}</small>
+                            <small class="p-error" v-if="submitted && !service.min_price">Minimum Price is required</small>
                         </div>
                         <div class="field col">
                             <label for="max_price">Maximum Price</label>
-                            <InputText id="max_price" v-model="service.max_price"
-                                :class="{ 'p-invalid': submitted && !service.max_price }" :required="true"
-                                name="max_price" />
-                            <small class="p-invalid" v-if="submitted && !service.max_price">Maximum price is
-                                required.</small>
+                            <InputText id="max_price" v-model="service.max_price" name="max_price"
+                                :class="{ 'p-invalid': submitted && errors && errors.max_price || !service.max_price }" />
+                            <small class="p-error" v-if="submitted && errors && errors.max_price">{{ errors.max_price
+                            }}</small>
+                            <small class="p-error" v-if="submitted && !service.max_price">Maximum Price is required</small>
                         </div>
                     </div>
 
                     <div class="field">
                         <label>Status</label>
                         <SelectButton v-model="service.status" :options="statuses" id="status" name="status"
+                            :class="{ 'p-invalid': submitted && errors && errors.status || !service.status }"
                             aria-labelledby="basic" />
+                        <small class="p-error" v-if="submitted && errors && errors.status">{{ errors.status }}</small>
+                        <small class="p-error" v-if="submitted && !service.status">Status is required</small>
                     </div>
 
                     <template #footer>
