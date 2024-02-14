@@ -28,28 +28,28 @@ const props = defineProps({
 })
 
 const toast = useToast();
-const services = ref(null);
-const serviceDialog = ref(false);
-const deleteServiceDialog = ref(false);
-const service = ref({});
+const records = ref(null);
+const record = ref({});
+const recordDialog = ref(false);
+const deleteRecordDialog = ref(false);
 const dt = ref(null);
 const submitted = ref(false);
 const statuses = ref(['Active', 'Inactive']);
 
+const currentPage = ref(1);
 const first = ref(0);
-const currentPage = ref(0);
-const search = ref('');
 const last = ref(0);
 const totalRecords = ref(0);
 const perPage = ref(0);
-const loading = ref(false);
+const search = ref('');
+const dataTableLoading = ref(false);
 
 onMounted(() => {
     reloadDataTable();
 });
 
 const reloadDataTable = () => {
-    services.value = props.services.data;
+    records.value = props.services.data;
     first.value = props.services.meta.from - 1;
     last.value = props.services.meta.last_page;
     totalRecords.value = props.services.meta.total;
@@ -63,25 +63,24 @@ const handlePageUpdate = (page) => {
 }
 
 watch(search, debounce((value) => {
-    currentPage.value = 1;
     loadData(currentPage, value);
 }, 500));
 
-const loadData = (currentPage, searchKey) => {
+const loadData = (currentPage, searchKeyword = '') => {
     const urlData = {
         page: currentPage.value,
-        search: searchKey
+        search: searchKeyword
     }
 
     router.get('/admin/services', urlData, {
         preserveScroll: true,
         preserveState: true,
         onBefore: () => {
-            loading.value = true;
+            dataTableLoading.value = true;
         },
         onSuccess: () => {
             reloadDataTable();
-            loading.value = false;
+            dataTableLoading.value = false;
         }
     });
 }
@@ -91,36 +90,35 @@ const formatCurrency = (value) => {
 };
 
 const openNew = () => {
-    service.value = {};
+    record.value = {};
     submitted.value = false;
-    serviceDialog.value = true;
+    recordDialog.value = true;
 };
 
 const hideDialog = () => {
-    serviceDialog.value = false;
+    recordDialog.value = false;
     submitted.value = false;
 };
 
 const saveRecord = () => {
     submitted.value = true;
 
-    if (service.value.name && service.value.name.trim() && service.value.min_price && service.value.max_price && service.value.status) {
-
+    if (record.value.name && record.value.name.trim() && record.value.min_price && record.value.max_price && record.value.status) {
         const postData = {
-            name: service.value.name,
-            description: service.value.description,
-            min_price: service.value.min_price,
-            max_price: service.value.max_price,
-            status: service.value.status
+            name: record.value.name,
+            description: record.value.description,
+            min_price: record.value.min_price,
+            max_price: record.value.max_price,
+            status: record.value.status
         };
 
-        if (service.value.id) {
-            router.put(`/admin/services/${service.value.id}`, postData, {
+        if (record.value.id) {
+            router.put(`/admin/services/${record.value.id}`, postData, {
                 onSuccess: () => {
                     reloadDataTable();
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
-                    serviceDialog.value = false;
-                    service.value = {};
+                    recordDialog.value = false;
+                    record.value = {};
                 },
             });
         } else {
@@ -128,8 +126,8 @@ const saveRecord = () => {
                 onSuccess: () => {
                     reloadDataTable();
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
-                    serviceDialog.value = false;
-                    service.value = {};
+                    recordDialog.value = false;
+                    record.value = {};
                 },
                 onError: errors => {
                     if (errors) {
@@ -144,19 +142,19 @@ const saveRecord = () => {
 };
 
 const editRecord = (recordData) => {
-    service.value = { ...recordData };
-    serviceDialog.value = true;
+    record.value = { ...recordData };
+    recordDialog.value = true;
 };
 
-const confirmDeleteRecord = (deleteData) => {
-    service.value = deleteData;
-    deleteServiceDialog.value = true;
+const confirmDeleteRecord = (data) => {
+    record.value = data;
+    deleteRecordDialog.value = true;
 };
 
 const deleteRecord = () => {
-    deleteServiceDialog.value = false;
+    deleteRecordDialog.value = false;
 
-    router.delete(`/admin/services/${service.value.id}`, {
+    router.delete(`/admin/services/${record.value.id}`, {
         onSuccess: () => {
             reloadDataTable();
             toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
@@ -179,10 +177,10 @@ const deleteRecord = () => {
                     </template>
                 </Toolbar>
 
-                <DataTable ref="dt" lazy paginator :loading="loading" @page="handlePageUpdate"
+                <DataTable ref="dt" lazy paginator :loading="dataTableLoading" @page="handlePageUpdate"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
-                    responsiveLayout="scroll" dataKey="id" :value="services" :first="first" :last="last"
+                    responsiveLayout="scroll" dataKey="id" :value="records" :first="first" :last="last"
                     :totalRecords="totalRecords" :rows="perPage" :rowsPerPageOptions="[perPage]">
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -244,50 +242,50 @@ const deleteRecord = () => {
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="serviceDialog" :style="{ width: '450px' }" header="Service Details" :modal="true"
+                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Service Details" :modal="true" closeOnEscape
                     class="p-fluid">
                     <div class="field">
                         <label for="name">Name</label>
-                        <InputText id="name" v-model.trim="service.name" name="name" autofocus autocomplete="true"
-                            :class="{ 'p-invalid': submitted && errors && errors.name || !service.name }" />
+                        <InputText id="name" v-model.trim="record.name" name="name" autofocus autocomplete="true"
+                            :class="{ 'p-invalid': submitted && (errors && errors.name || !record.name) }" />
                         <small class="p-error" v-if="submitted && errors && errors.name">{{ errors.name }}</small>
-                        <small class="p-error" v-if="submitted && !service.name">Name is required</small>
+                        <small class="p-error" v-if="submitted && !record.name">Name is required</small>
                     </div>
                     <div class="field">
                         <label for="description">Description</label>
-                        <Textarea id="description" v-model="service.description" name="description" rows="3" cols="20"
-                            :class="{ 'p-invalid': submitted && errors && errors.description || !service.description }" />
+                        <Textarea id="description" v-model="record.description" name="description" rows="3" cols="20"
+                            :class="{ 'p-invalid': submitted && (errors && errors.description || !record.description) }" />
                         <small class="p-error" v-if="submitted && errors && errors.description">{{ errors.description
                         }}</small>
-                        <small class="p-error" v-if="submitted && !service.description">Description is required</small>
+                        <small class="p-error" v-if="submitted && !record.description">Description is required</small>
                     </div>
 
                     <div class="formgrid grid">
                         <div class="field col">
                             <label for="min_price">Minimum Price</label>
-                            <InputText id="min_price" v-model="service.min_price" name="min_price"
-                                :class="{ 'p-invalid': submitted && errors && errors.min_price || !service.min_price }" />
+                            <InputText id="min_price" v-model="record.min_price" name="min_price"
+                                :class="{ 'p-invalid': submitted && (errors && errors.min_price || !record.min_price) }" />
                             <small class="p-error" v-if="submitted && errors && errors.min_price">{{ errors.min_price
                             }}</small>
-                            <small class="p-error" v-if="submitted && !service.min_price">Minimum Price is required</small>
+                            <small class="p-error" v-if="submitted && !record.min_price">Minimum Price is required</small>
                         </div>
                         <div class="field col">
                             <label for="max_price">Maximum Price</label>
-                            <InputText id="max_price" v-model="service.max_price" name="max_price"
-                                :class="{ 'p-invalid': submitted && errors && errors.max_price || !service.max_price }" />
+                            <InputText id="max_price" v-model="record.max_price" name="max_price"
+                                :class="{ 'p-invalid': submitted && (errors && errors.max_price || !record.max_price) }" />
                             <small class="p-error" v-if="submitted && errors && errors.max_price">{{ errors.max_price
                             }}</small>
-                            <small class="p-error" v-if="submitted && !service.max_price">Maximum Price is required</small>
+                            <small class="p-error" v-if="submitted && !record.max_price">Maximum Price is required</small>
                         </div>
                     </div>
 
                     <div class="field">
                         <label>Status</label>
-                        <SelectButton v-model="service.status" :options="statuses" id="status" name="status"
-                            :class="{ 'p-invalid': submitted && errors && errors.status || !service.status }"
+                        <SelectButton v-model="record.status" :options="statuses" id="status" name="status"
+                            :class="{ 'p-invalid': submitted && (errors && errors.status || !record.status) }"
                             aria-labelledby="basic" />
                         <small class="p-error" v-if="submitted && errors && errors.status">{{ errors.status }}</small>
-                        <small class="p-error" v-if="submitted && !service.status">Status is required</small>
+                        <small class="p-error" v-if="submitted && !record.status">Status is required</small>
                     </div>
 
                     <template #footer>
@@ -296,13 +294,13 @@ const deleteRecord = () => {
                     </template>
                 </Dialog>
 
-                <Dialog v-model:visible="deleteServiceDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+                <Dialog v-model:visible="deleteRecordDialog" :style="{ width: '450px' }" header="Confirm" :modal="true" closeOnEscape>
                     <div class="flex align-items-center justify-content-center">
                         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                        <span v-if="service">Are you sure you want to delete <b>{{ service.name }}</b>?</span>
+                        <span v-if="record">Are you sure you want to delete <b>{{ record.name }}</b>?</span>
                     </div>
                     <template #footer>
-                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteServiceDialog = false" />
+                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteRecordDialog = false" />
                         <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteRecord" />
                     </template>
                 </Dialog>
