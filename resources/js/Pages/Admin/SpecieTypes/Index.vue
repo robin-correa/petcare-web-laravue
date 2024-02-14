@@ -21,7 +21,7 @@ import { router } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
 
 const props = defineProps({
-    services: Object,
+    specieTypes: Object,
     errors: Object,
     flash: Object,
     search: String
@@ -49,11 +49,11 @@ onMounted(() => {
 });
 
 const reloadDataTable = () => {
-    records.value = props.services.data;
-    first.value = props.services.meta.from - 1;
-    last.value = props.services.meta.last_page;
-    totalRecords.value = props.services.meta.total;
-    perPage.value = props.services.meta.per_page;
+    records.value = props.specieTypes.data;
+    first.value = props.specieTypes.meta.from - 1;
+    last.value = props.specieTypes.meta.last_page;
+    totalRecords.value = props.specieTypes.meta.total;
+    perPage.value = props.specieTypes.meta.per_page;
     search.value = props.search;
 }
 
@@ -72,7 +72,7 @@ const loadData = (currentPage, searchKeyword = '') => {
         search: searchKeyword
     }
 
-    router.get('/admin/services', urlData, {
+    router.get('/admin/specieTypes', urlData, {
         preserveScroll: true,
         preserveState: true,
         onBefore: () => {
@@ -84,10 +84,6 @@ const loadData = (currentPage, searchKeyword = '') => {
         }
     });
 }
-
-const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-};
 
 const openNew = () => {
     record.value = {};
@@ -103,17 +99,15 @@ const hideDialog = () => {
 const saveRecord = () => {
     submitted.value = true;
 
-    if (record.value.name && record.value.name.trim() && record.value.description && record.value.min_price && record.value.max_price && record.value.status) {
+    if (record.value.name && record.value.name.trim() && record.value.description && record.value.status) {
         const postData = {
             name: record.value.name,
             description: record.value.description,
-            min_price: record.value.min_price,
-            max_price: record.value.max_price,
             status: record.value.status
         };
 
         if (record.value.id) {
-            router.put(`/admin/services/${record.value.id}`, postData, {
+            router.put(`/admin/specieTypes/${record.value.id}`, postData, {
                 onSuccess: () => {
                     reloadDataTable();
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
@@ -122,7 +116,7 @@ const saveRecord = () => {
                 },
             });
         } else {
-            router.post('/admin/services', postData, {
+            router.post('/admin/specieTypes', postData, {
                 onSuccess: () => {
                     reloadDataTable();
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
@@ -154,7 +148,7 @@ const confirmDeleteRecord = (data) => {
 const deleteRecord = () => {
     deleteRecordDialog.value = false;
 
-    router.delete(`/admin/services/${record.value.id}`, {
+    router.delete(`/admin/specieTypes/${record.value.id}`, {
         onSuccess: () => {
             reloadDataTable();
             toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
@@ -184,7 +178,7 @@ const deleteRecord = () => {
                     :totalRecords="totalRecords" :rows="perPage" :rowsPerPageOptions="[perPage]">
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                            <h5 class="m-0">Manage Services</h5>
+                            <h5 class="m-0">Manage Specie Types</h5>
                             <span class="block mt-2 md:mt-0 p-input-icon-left">
                                 <i class="pi pi-search" />
                                 <InputText v-model="search" placeholder="Search..." id="search" name="search" />
@@ -206,25 +200,13 @@ const deleteRecord = () => {
                             {{ slotProps.data.name }}
                         </template>
                     </Column>
-                    <Column field="description" header="Description" headerStyle="width:20%; min-width:10rem;">
+                    <Column field="description" header="Description" headerStyle="width:35%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Description</span>
                             {{ slotProps.data.description }}
                         </template>
                     </Column>
-                    <Column field="min_price" header="Minimum Price" headerStyle="width:5%; min-width:8rem;">
-                        <template #body="slotProps">
-                            <span class="p-column-title">Minimum Price</span>
-                            {{ formatCurrency(slotProps.data.min_price) }}
-                        </template>
-                    </Column>
-                    <Column field="max_price" header="Maximum Price" headerStyle="width:5%; min-width:8rem;">
-                        <template #body="slotProps">
-                            <span class="p-column-title">Maximum Price</span>
-                            {{ formatCurrency(slotProps.data.max_price) }}
-                        </template>
-                    </Column>
-                    <Column field="status" header="Status" headerStyle="width:5%; min-width:10rem;">
+                    <Column field="status" header="Status" headerStyle="width:10%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Status</span>
                             <span
@@ -242,7 +224,7 @@ const deleteRecord = () => {
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Service details" :modal="true" closeOnEscape
+                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Specie type details" :modal="true" closeOnEscape
                     class="p-fluid">
                     <div class="field">
                         <label for="name">Name</label>
@@ -259,26 +241,6 @@ const deleteRecord = () => {
                         }}</small>
                         <small class="p-error" v-if="submitted && !record.description">Description is required</small>
                     </div>
-
-                    <div class="formgrid grid">
-                        <div class="field col">
-                            <label for="min_price">Minimum Price</label>
-                            <InputText id="min_price" v-model="record.min_price" name="min_price"
-                                :class="{ 'p-invalid': submitted && (errors && errors.min_price || !record.min_price) }" />
-                            <small class="p-error" v-if="submitted && errors && errors.min_price">{{ errors.min_price
-                            }}</small>
-                            <small class="p-error" v-if="submitted && !record.min_price">Minimum Price is required</small>
-                        </div>
-                        <div class="field col">
-                            <label for="max_price">Maximum Price</label>
-                            <InputText id="max_price" v-model="record.max_price" name="max_price"
-                                :class="{ 'p-invalid': submitted && (errors && errors.max_price || !record.max_price) }" />
-                            <small class="p-error" v-if="submitted && errors && errors.max_price">{{ errors.max_price
-                            }}</small>
-                            <small class="p-error" v-if="submitted && !record.max_price">Maximum Price is required</small>
-                        </div>
-                    </div>
-
                     <div class="field">
                         <label>Status</label>
                         <SelectButton v-model="record.status" :options="statuses" id="status" name="status"

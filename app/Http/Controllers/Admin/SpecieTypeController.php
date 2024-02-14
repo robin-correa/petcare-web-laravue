@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ServiceRequest;
-use App\Http\Resources\Admin\ServiceResource;
-use App\Models\Service;
+use App\Http\Requests\Admin\SpecieTypeRequest;
+use App\Http\Resources\Admin\SpecieTypeResource;
+use App\Models\SpecieType;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class ServiceController extends Controller
+class SpecieTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,13 +19,13 @@ class ServiceController extends Controller
         $search = $request->get('search');
 
         if (!empty($search)) {
-            $services = Service::search($search)->paginate(10)->withQueryString();
+            $specieTypes = SpecieType::search($search)->paginate(10)->withQueryString();
         } else {
-            $services = Service::orderBy('id', 'DESC')->paginate(10);
+            $specieTypes = SpecieType::orderBy('id', 'DESC')->paginate(10);
         }
 
-        return Inertia::render('Admin/Services/Index', [
-            'services' => ServiceResource::collection($services),
+        return Inertia::render('Admin/SpecieTypes/Index', [
+            'specieTypes' => SpecieTypeResource::collection($specieTypes),
             'search' => $search ?? '',
         ]);
     }
@@ -41,12 +41,12 @@ class ServiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ServiceRequest $request)
+    public function store(SpecieTypeRequest $request)
     {
-        Service::create($request->validated());
+        SpecieType::create($request->validated());
 
-        return redirect()->route('admin.services.index')->with('flash', [
-            'success' => 'New service has been added'
+        return redirect()->route('admin.specieTypes.index')->with('flash', [
+            'success' => 'New specie type has been added'
         ]);
     }
 
@@ -69,12 +69,12 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ServiceRequest $request, Service $service)
+    public function update(SpecieTypeRequest $request, SpecieType $specieType)
     {
-        $service->update($request->validated());
+        $specieType->update($request->validated());
 
         return redirect()->back()->with('flash', [
-            'success' => 'Service has been updated'
+            'success' => 'Specie type has been updated'
         ]);
     }
 
@@ -83,11 +83,11 @@ class ServiceController extends Controller
      */
     public function destroy(string $id)
     {
-        $service = Service::findOrFail($id);
-        $service->delete($id);
+        $specieType = SpecieType::findOrFail($id);
+        $specieType->delete($id);
 
         return redirect()->back()->with('flash', [
-            'success' => 'Service has been deleted'
+            'success' => 'Specie type has been deleted'
         ]);
     }
 }
