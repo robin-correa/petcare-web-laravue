@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SpecieTypeController;
+use App\Http\Controllers\Admin\VeterinarianController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -36,4 +37,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
     
     Route::resource('services', ServiceController::class);
     Route::resource('specieTypes', SpecieTypeController::class);
+    Route::resource('veterinarians', VeterinarianController::class);
 });
