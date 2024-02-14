@@ -10,7 +10,7 @@ import StyleClass from "primevue/styleclass";
 import "@/sakai-vue-master/assets/styles.scss";
 import "primevue/resources/themes/lara-light-teal/theme.css";
 
-const appName = import.meta.env.VITE_APP_NAME || "SAKAI";
+const appName = import.meta.env.VITE_APP_NAME || "PETCARE";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

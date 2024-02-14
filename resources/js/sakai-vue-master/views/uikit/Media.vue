@@ -64,7 +64,7 @@ onMounted(() => {
                     <template #item="product">
                         <div class="border-round m-2 text-center p-2" style="border: 1px solid var(--surface-d)">
                             <div class="my-5">
-                                <img :src="'demo/images/product/' + product.data.image" :alt="product.data.name" class="product-image" />
+                                <img :src="'/demo/images/product/' + product.data.image" :alt="product.data.name" class="product-image" />
                             </div>
                             <div>
                                 <h5 class="mb-1">
@@ -102,7 +102,7 @@ onMounted(() => {
             <div class="card">
                 <h5>Image</h5>
                 <div class="flex justify-content-center">
-                    <Image :src="'demo/images/galleria/galleria11.jpg'" alt="Image" width="250" preview />
+                    <Image :src="'/demo/images/galleria/galleria11.jpg'" alt="Image" width="250" preview />
                 </div>
             </div>
         </div>
