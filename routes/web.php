@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SpecieTypeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -28,14 +29,11 @@ Route::get('/login', function () {
     return Inertia::render('Login');
 });
 
-Route::get('/table', function () {
-    return Inertia::render('Table');
-});
-
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     });
     
     Route::resource('services', ServiceController::class);
+    Route::resource('specieTypes', SpecieTypeController::class);
 });

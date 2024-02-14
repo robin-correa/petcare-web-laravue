@@ -16,7 +16,7 @@ const model = ref([
             { label: 'Appointments', icon: 'pi pi-fw pi-calendar-plus', to: '/admin/appointments' },
             { label: 'Veterinarians', icon: 'pi pi-fw pi-id-card', to: '/admin/veterinarians' },
             { label: 'Pets', icon: 'pi pi-verified', to: '/admin/pets' },
-            { label: 'Pet Species', icon: 'pi pi-tags', to: '/admin/species' },
+            { label: 'Pet Species', icon: 'pi pi-tags', to: '/admin/specieTypes' },
             { label: 'Services', icon: 'pi pi-fw pi-book', to: '/admin/services' },
             { label: 'Payments', icon: 'pi pi-fw pi-credit-card', to: '/admin/payments' },
         ]
