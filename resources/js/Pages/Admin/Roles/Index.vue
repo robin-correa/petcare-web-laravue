@@ -8,7 +8,7 @@ import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
-import Textarea from 'primevue/textarea';
+import MultiSelect from 'primevue/multiselect';
 import SelectButton from 'primevue/selectbutton';
 import AppLayout from "@/sakai-vue-master/layout/AppLayout.vue";
 import { router } from '@inertiajs/vue3';
@@ -16,6 +16,7 @@ import debounce from 'lodash/debounce';
 
 const props = defineProps({
     roles: Object,
+    permissions: Object,
     errors: Object,
     flash: Object,
     search: String
@@ -39,6 +40,7 @@ const totalRecords = ref(0);
 const perPage = ref(0);
 const search = ref('');
 const dataTableLoading = ref(false);
+const selectedPermissions = ref([]);
 
 onMounted(() => {
     reloadDataTable();
@@ -88,6 +90,7 @@ const openNew = () => {
 };
 
 const hideDialog = () => {
+    selectedPermissions.value = [];
     recordDialog.value = false;
     submitted.value = false;
 };
@@ -95,11 +98,11 @@ const hideDialog = () => {
 const saveRecord = () => {
     submitted.value = true;
 
-    if (record.value.name && record.value.name.trim() && record.value.guard_name) {
+    if (record.value.name && record.value.name.trim() && record.value.guard_name && selectedPermissions.value.length > 0) {
         const postData = {
             name: record.value.name,
             guard_name: record.value.guard_name,
-            status: record.value.status
+            permissions: selectedPermissions.value
         };
 
         if (record.value.id) {
@@ -109,6 +112,13 @@ const saveRecord = () => {
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
                     recordDialog.value = false;
                     record.value = {};
+                },
+                onError: errors => {
+                    if (errors) {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Validation failed', life: 3000 });
+                    } else {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Oops, something went wrong. Please try again later.', life: 3000 });
+                    }
                 },
             });
         } else {
@@ -133,6 +143,7 @@ const saveRecord = () => {
 
 const editRecord = (recordData) => {
     record.value = { ...recordData };
+    selectedPermissions.value = recordData.permissions;
     recordDialog.value = true;
 };
 
@@ -196,7 +207,7 @@ const deleteRecord = () => {
                             {{ slotProps.data.name }}
                         </template>
                     </Column>
-                    <Column field="name" header="Name" headerStyle="width:15%; min-width:10rem;">
+                    <Column field="name" header="Guard" headerStyle="width:15%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Guard</span>
                             {{ slotProps.data.guard_name }}
@@ -212,7 +223,7 @@ const deleteRecord = () => {
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Role details" :modal="true" closeOnEscape
+                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Role details" :modal="true" @hide="hideDialog" closeOnEscape 
                     class="p-fluid">
                     <div class="field">
                         <label for="name">Name</label>
@@ -229,7 +240,18 @@ const deleteRecord = () => {
                         <small class="p-error" v-if="submitted && errors && errors.guard_name">{{ errors.guard_name }}</small>
                         <small class="p-error" v-if="submitted && !record.guard_name">Guard type is required</small>
                     </div>
-
+                    <div class="field">
+                        <label>Permissions</label>
+                        <MultiSelect v-model="selectedPermissions" :options="permissions" display="chip" filter optionValue="id" optionLabel="name" :maxSelectedLabels="3" placeholder="Select" class="w-full md:w-50rem" :class="{ 'p-invalid': submitted && (errors && errors.permissions || selectedPermissions.length == 0) }">
+                            <template #header>
+                                <div class="py-2 px-3">
+                                    <b>{{ selectedPermissions ? selectedPermissions.length : 0 }}</b> item{{ (selectedPermissions ? selectedPermissions.length : 0) > 3 ? 's' : '' }} selected.
+                                </div>
+                            </template>
+                        </MultiSelect>
+                        <small class="p-error" v-if="submitted && errors && errors.permissions">{{ errors.permissions }}</small>
+                        <small class="p-error" v-if="submitted && selectedPermissions.length == 0">Permission(s) is/are required</small>
+                    </div>
                     <template #footer>
                         <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
                         <Button label="Save" icon="pi pi-check" class="p-button-text" @click="saveRecord" />

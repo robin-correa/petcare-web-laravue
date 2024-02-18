@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RoleRequest;
+use App\Http\Resources\Admin\PermissionResource;
 use App\Http\Resources\Admin\RoleResource;
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -26,6 +28,7 @@ class RoleController extends Controller
 
         return Inertia::render('Admin/Roles/Index', [
             'roles' => RoleResource::collection($roles),
+            'permissions' => PermissionResource::collection(Permission::all()),
             'search' => $search ?? '',
         ]);
     }
@@ -43,7 +46,8 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        Role::create($request->validated());
+        $role = Role::create($request->validated());
+        $role->syncPermissions($request->permissions);
 
         return redirect()->route('admin.roles.index')->with('flash', [
             'success' => 'New role has been added'
@@ -72,6 +76,7 @@ class RoleController extends Controller
     public function update(RoleRequest $request, Role $role)
     {
         $role->update($request->validated());
+        $role->syncPermissions($request->permissions);
 
         return redirect()->back()->with('flash', [
             'success' => 'Role has been updated'
@@ -84,6 +89,7 @@ class RoleController extends Controller
     public function destroy(string $id)
     {
         $role = Role::findOrFail($id);
+        $role->revokePermissionTo($role->permissions);
         $role->delete($id);
 
         return redirect()->back()->with('flash', [

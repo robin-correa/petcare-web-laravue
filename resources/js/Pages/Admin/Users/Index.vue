@@ -117,6 +117,13 @@ const saveRecord = () => {
                     recordDialog.value = false;
                     record.value = {};
                 },
+                onError: errors => {
+                    if (errors) {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Validation failed', life: 3000 });
+                    } else {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Oops, something went wrong. Please try again later.', life: 3000 });
+                    }
+                },
             });
         } else {
             postData.password = password.value;

@@ -110,6 +110,13 @@ const saveRecord = () => {
                     recordDialog.value = false;
                     record.value = {};
                 },
+                onError: errors => {
+                    if (errors) {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Validation failed', life: 3000 });
+                    } else {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Oops, something went wrong. Please try again later.', life: 3000 });
+                    }
+                },
             });
         } else {
             router.post('/admin/specieTypes', postData, {
@@ -220,7 +227,7 @@ const deleteRecord = () => {
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Specie type details" :modal="true" closeOnEscape
+                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Specie type details" :modal="true" @hide="hideDialog" closeOnEscape
                     class="p-fluid">
                     <div class="field">
                         <label for="name">Name</label>

@@ -242,7 +242,7 @@ const deleteRecord = () => {
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Veterinarian details" :modal="true" closeOnEscape
+                <Dialog v-model:visible="recordDialog" :style="{ width: '450px' }" header="Veterinarian details" :modal="true" @hide="hideDialog" closeOnEscape
                     class="p-fluid">
                     <div class="field">
                         <label for="last_name">Last Name</label>
