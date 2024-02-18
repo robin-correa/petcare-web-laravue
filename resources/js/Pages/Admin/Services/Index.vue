@@ -1,9 +1,3 @@
-<script>
-export default {
-    layout: AppLayout
-}
-</script>
-
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useToast } from 'primevue/usetoast';
@@ -26,6 +20,8 @@ const props = defineProps({
     flash: Object,
     search: String
 })
+
+defineOptions({ layout: AppLayout })
 
 const toast = useToast();
 const records = ref(null);

@@ -24,54 +24,8 @@ const model = ref([
     {
         label: 'System',
         items: [
-            {
-                label: 'Users',
-                icon: 'pi pi-fw pi-users',
-                items: [
-                    {
-                        label: 'All',
-                        icon: 'pi pi-fw pi-book',
-                        to: '/admin/users'
-                    },
-                    {
-                        label: 'New',
-                        icon: 'pi pi-fw pi-plus-circle',
-                        to: '/admin/users/create'
-                    },
-                ]
-            },
-            {
-                label: 'Roles',
-                icon: 'pi pi-fw pi-cog',
-                items: [
-                    {
-                        label: 'All',
-                        icon: 'pi pi-fw pi-book',
-                        to: '/admin/roles'
-                    },
-                    {
-                        label: 'New',
-                        icon: 'pi pi-fw pi-plus-circle',
-                        to: '/admin/roles/create'
-                    },
-                ]
-            },
-            {
-                label: 'Permissions',
-                icon: 'pi pi-fw pi-cog',
-                items: [
-                    {
-                        label: 'All',
-                        icon: 'pi pi-fw pi-book',
-                        to: '/admin/permissions'
-                    },
-                    {
-                        label: 'New',
-                        icon: 'pi pi-fw pi-plus-circle',
-                        to: '/admin/permissions/create'
-                    },
-                ]
-            },
+            { label: 'Users', icon: 'pi pi-fw pi-user', to: '/admin/users' },
+            { label: 'Roles', icon: 'pi pi-fw pi-cog', to: '/admin/roles' },
         ]
     }
 ]);
