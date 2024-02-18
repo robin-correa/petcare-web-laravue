@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SpecieTypeController;
 use App\Http\Controllers\Admin\UserController;
@@ -38,6 +39,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     
     Route::resource('services', ServiceController::class);
     Route::resource('specieTypes', SpecieTypeController::class);
-    Route::resource('users', UserController::class);
     Route::resource('veterinarians', VeterinarianController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('roles', RoleController::class);
 });
