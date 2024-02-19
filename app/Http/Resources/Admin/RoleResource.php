@@ -19,7 +19,7 @@ class RoleResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'guard_name' => $this->guard_name,
-            'permissions' => $this->permissions->pluck('id')->all()
+            'permissions' => $this->whenLoaded('permissions')->pluck('id')->all()
         ];
     }
 }

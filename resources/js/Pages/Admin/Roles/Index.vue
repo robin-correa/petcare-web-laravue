@@ -98,11 +98,11 @@ const hideDialog = () => {
 const saveRecord = () => {
     submitted.value = true;
 
-    if (record.value.name && record.value.name.trim() && record.value.guard_name && selectedPermissions.value.length > 0) {
+    if (record.value.name && record.value.name.trim() && record.value.guard_name) {
         const postData = {
             name: record.value.name,
             guard_name: record.value.guard_name,
-            permissions: selectedPermissions.value
+            permissions: selectedPermissions.value || []
         };
 
         if (record.value.id) {
@@ -242,7 +242,7 @@ const deleteRecord = () => {
                     </div>
                     <div class="field">
                         <label>Permissions</label>
-                        <MultiSelect v-model="selectedPermissions" :options="permissions" display="chip" filter optionValue="id" optionLabel="name" :maxSelectedLabels="3" placeholder="Select" class="w-full md:w-50rem" :class="{ 'p-invalid': submitted && (errors && errors.permissions || selectedPermissions.length == 0) }">
+                        <MultiSelect v-model="selectedPermissions" :options="permissions" display="chip" filter optionValue="id" optionLabel="name" :maxSelectedLabels="3" placeholder="Select" class="w-full md:w-50rem" :class="{ 'p-invalid': submitted && (errors && errors.permissions) }">
                             <template #header>
                                 <div class="py-2 px-3">
                                     <b>{{ selectedPermissions ? selectedPermissions.length : 0 }}</b> item{{ (selectedPermissions ? selectedPermissions.length : 0) > 3 ? 's' : '' }} selected.
@@ -250,7 +250,6 @@ const deleteRecord = () => {
                             </template>
                         </MultiSelect>
                         <small class="p-error" v-if="submitted && errors && errors.permissions">{{ errors.permissions }}</small>
-                        <small class="p-error" v-if="submitted && selectedPermissions.length == 0">Permission(s) is/are required</small>
                     </div>
                     <template #footer>
                         <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog" />

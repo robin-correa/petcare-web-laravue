@@ -21,9 +21,9 @@ class RoleController extends Controller
         $search = $request->get('search');
 
         if (!empty($search)) {
-            $roles = Role::search($search)->paginate(10)->withQueryString();
+            $roles = Role::with('permissions')->search($search)->paginate(10)->withQueryString();
         } else {
-            $roles = Role::orderBy('id', 'DESC')->paginate(10);
+            $roles = Role::with('permissions')->orderBy('id', 'DESC')->paginate(10);
         }
 
         return Inertia::render('Admin/Roles/Index', [
