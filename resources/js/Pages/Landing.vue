@@ -65,8 +65,8 @@ const smoothScroll = (id) => {
                 style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%); clip-path: ellipse(150% 87% at 93% 13%)"
             >
                 <div class="mx-4 md:mx-8 mt-0 md:mt-4">
-                    <h1 class="text-6xl font-bold text-gray-900 line-height-2"><span class="font-light block">Eu sem integer</span>eget magna fermentum</h1>
-                    <p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">Sed blandit libero volutpat sed cras. Fames ac turpis egestas integer. Placerat in egestas erat...</p>
+                    <h1 class="text-6xl font-bold text-gray-900 line-height-2"><span class="font-light block">Discover Comprehensive</span>Pet Care Services</h1>
+                    <p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">Explore a range of specialized services tailored to meet the unique needs of your beloved pets. From veterinary care to grooming, we ensure top-notch care for your furry companions.</p>
                     <Button label="Get Started" class="p-button-rounded text-xl border-none mt-5 bg-blue-500 font-normal text-white line-height-3 px-3"></Button>
                 </div>
                 <div class="flex justify-content-center md:justify-content-end">
@@ -77,8 +77,8 @@ const smoothScroll = (id) => {
             <div id="features" class="py-4 px-4 lg:px-8 mt-5 mx-0 lg:mx-8">
                 <div class="grid justify-content-center">
                     <div class="col-12 text-center mt-8 mb-4">
-                        <h2 class="text-900 font-normal mb-2">Marvelous Features</h2>
-                        <span class="text-600 text-2xl">Placerat in egestas erat...</span>
+                        <h2 class="text-900 font-normal mb-2">Services</h2>
+                        <span class="text-600 text-2xl">Experience the Ultimate Pet Care Journey with PetCare. Start Exploring Today!</span>
                     </div>
 
                     <div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
@@ -89,7 +89,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-yellow-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-users text-2xl text-yellow-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Easy to Use</h5>
+                                <h5 class="mb-2 text-900">Expert Veterinarians at Your Service</h5>
                                 <span class="text-600">Posuere morbi leo urna molestie.</span>
                             </div>
                         </div>
@@ -103,7 +103,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-cyan-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-palette text-2xl text-cyan-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Fresh Design</h5>
+                                <h5 class="mb-2 text-900">Create Lasting Memories with Your Pet</h5>
                                 <span class="text-600">Semper risus in hendrerit.</span>
                             </div>
                         </div>
@@ -117,7 +117,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-indigo-200" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-map text-2xl text-indigo-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Well Documented</h5>
+                                <h5 class="mb-2 text-900">Schedule Hassle-Free Appointments</h5>
                                 <span class="text-600">Non arcu risus quis varius quam quisque.</span>
                             </div>
                         </div>
@@ -131,7 +131,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-bluegray-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-id-card text-2xl text-bluegray-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Responsive Layout</h5>
+                                <h5 class="mb-2 text-900">Secure Online Payments</h5>
                                 <span class="text-600">Nulla malesuada pellentesque elit.</span>
                             </div>
                         </div>
@@ -145,7 +145,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-orange-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-star text-2xl text-orange-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Clean Code</h5>
+                                <h5 class="mb-2 text-900">Join Our Pet Community</h5>
                                 <span class="text-600">Condimentum lacinia quis vel eros.</span>
                             </div>
                         </div>
@@ -159,7 +159,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-pink-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-moon text-2xl text-pink-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Dark Mode</h5>
+                                <h5 class="mb-2 text-900">24/7 Support</h5>
                                 <span class="text-600">Convallis tellus id interdum velit laoreet.</span>
                             </div>
                         </div>
@@ -173,7 +173,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-teal-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-shopping-cart text-2xl text-teal-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Ready to Use</h5>
+                                <h5 class="mb-2 text-900">Grooming Services</h5>
                                 <span class="text-600">Mauris sit amet massa vitae.</span>
                             </div>
                         </div>
@@ -187,7 +187,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-blue-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-globe text-2xl text-blue-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Modern Practices</h5>
+                                <h5 class="mb-2 text-900">Emergency Care</h5>
                                 <span class="text-600">Elementum nibh tellus molestie nunc non.</span>
                             </div>
                         </div>
@@ -201,7 +201,7 @@ const smoothScroll = (id) => {
                                 <div class="flex align-items-center justify-content-center bg-purple-200 mb-3" style="width: 3.5rem; height: 3.5rem; border-radius: 10px">
                                     <i class="pi pi-fw pi-eye text-2xl text-purple-700"></i>
                                 </div>
-                                <h5 class="mb-2 text-900">Privacy</h5>
+                                <h5 class="mb-2 text-900">Nutritional Counseling</h5>
                                 <span class="text-600">Neque egestas congue quisque.</span>
                             </div>
                         </div>
