@@ -270,7 +270,7 @@ const deleteRecord = () => {
                             {{ slotProps.data.name }}
                         </template>
                     </Column>
-                    <Column field="email" header="Email" headerStyle="width:35%; min-width:10rem;">
+                    <Column field="email" header="Email" headerStyle="width:25%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Email</span>
                             {{ slotProps.data.email }}
@@ -284,7 +284,7 @@ const deleteRecord = () => {
                                     slotProps.data.status }}</span>
                         </template>
                     </Column>
-                    <Column headerStyle="width:5%; min-width:10rem;">
+                    <Column headerStyle="width:25%; min-width:10rem;">
                         <template #body="slotProps">
                             <Button icon="pi pi-key" class="p-button-rounded p-button-info mr-2"
                                 @click="editPermissions(slotProps.data)" />
