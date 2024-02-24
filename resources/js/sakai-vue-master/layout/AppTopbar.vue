@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { Link } from '@inertiajs/vue3'
 import { useLayout } from '@/sakai-vue-master/layout/composables/layout';
-import NavLink from "@/Components/NavLink.vue";
 import Menu from "primevue/menu";
 
-const { layoutConfig, onMenuToggle } = useLayout();
+const { onMenuToggle } = useLayout();
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
@@ -20,9 +20,7 @@ onBeforeUnmount(() => {
 const onTopBarMenuButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
 };
-const onSettingsClick = () => {
-    topbarMenuActive.value = false;
-};
+
 const topbarMenuClasses = computed(() => {
     return {
         'layout-topbar-menu-mobile-active': topbarMenuActive.value
@@ -75,35 +73,63 @@ const toggle = (event) => {
 </script>
 
 <template>
-    <div class="layout-topbar">
-        <NavLink href="/" class="layout-topbar-logo">
-            <img src="/layout/images/logo.png" alt="logo" />
-            <span>PETCARE</span>
-        </NavLink>
+  <div class="layout-topbar">
+    <Link
+      href="/"
+      class="layout-topbar-logo"
+    >
+      <img
+        src="/layout/images/logo.png"
+        alt="logo"
+      >
+      <span>PETCARE</span>
+    </Link>
 
-        <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
-            <i class="pi pi-bars"></i>
-        </button>
+    <button
+      class="p-link layout-menu-button layout-topbar-button"
+      @click="onMenuToggle()"
+    >
+      <i class="pi pi-bars" />
+    </button>
 
-        <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
-            <i class="pi pi-ellipsis-v"></i>
-        </button>
+    <button
+      class="p-link layout-topbar-menu-button layout-topbar-button"
+      @click="onTopBarMenuButton()"
+    >
+      <i class="pi pi-ellipsis-v" />
+    </button>
 
-        <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <Menu ref="menu" id="overlay_menu" :model="loginMenuItems" :popup="true">
-            <template #item="{ item, props }">
-                <NavLink v-ripple class="flex align-items-center" v-bind="props.action" :href="item.href">
-                    <span :class="item.icon" />
-                    <span class="ml-2">{{ item.label }}</span>
-                </NavLink>
-            </template>
-            </Menu>
-            <button @click="toggle" class="p-link layout-topbar-button">
-                <i class="pi pi-user"></i>
-                <span>Profile <i class="pi pi-angle-right"></i></span>
-            </button>
-        </div>
+    <div
+      class="layout-topbar-menu"
+      :class="topbarMenuClasses"
+    >
+      <Menu
+        ref="menu"
+        id="overlay_menu"
+        :model="loginMenuItems"
+        :popup="true"
+      >
+        <template #item="{ item, props }">
+          <Link
+            v-ripple
+            class="flex align-items-center"
+            v-bind="props.action"
+            :href="item.href"
+          >
+            <span :class="item.icon" />
+            <span class="ml-2">{{ item.label }}</span>
+          </Link>
+        </template>
+      </Menu>
+      <button
+        @click="toggle"
+        class="p-link layout-topbar-button"
+      >
+        <i class="pi pi-user" />
+        <span>Profile <i class="pi pi-angle-right" /></span>
+      </button>
     </div>
+  </div>
 </template>
 
 <style lang="scss" scoped></style>

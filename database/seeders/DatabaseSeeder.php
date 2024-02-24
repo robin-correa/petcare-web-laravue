@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use Database\Seeders\Admin\RolesAndPermissionsSeeder;
 use Database\Seeders\Admin\ServiceSeeder;
 use Database\Seeders\Admin\SpecieTypeSeeder;
 use Database\Seeders\Admin\VeterinarianSeeder;
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             SpecieTypeSeeder::class,
             VeterinarianSeeder::class,
+            RolesAndPermissionsSeeder::class
         ]);
     }
 }

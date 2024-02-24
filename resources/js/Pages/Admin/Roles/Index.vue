@@ -8,14 +8,20 @@ import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
-import Textarea from 'primevue/textarea';
+import MultiSelect from 'primevue/multiselect';
 import SelectButton from 'primevue/selectbutton';
 import AppLayout from "@/sakai-vue-master/layout/AppLayout.vue";
 import { router } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
 
 const props = defineProps({
-    veterinarians: {
+    roles: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    permissions: {
       type: Object,
       default() {
         return {}
@@ -48,7 +54,7 @@ const recordDialog = ref(false);
 const deleteRecordDialog = ref(false);
 const dt = ref(null);
 const submitted = ref(false);
-const statuses = ref(['Active', 'Inactive']);
+const guards = ref(['web', 'api']);
 
 const currentPage = ref(1);
 const first = ref(0);
@@ -57,17 +63,18 @@ const totalRecords = ref(0);
 const perPage = ref(0);
 const searchKeyword = ref('');
 const dataTableLoading = ref(false);
+const selectedPermissions = ref([]);
 
 onMounted(() => {
     reloadDataTable();
 });
 
 const reloadDataTable = () => {
-    records.value = props.veterinarians.data;
-    first.value = props.veterinarians.meta.from - 1;
-    last.value = props.veterinarians.meta.last_page;
-    totalRecords.value = props.veterinarians.meta.total;
-    perPage.value = props.veterinarians.meta.per_page;
+    records.value = props.roles.data;
+    first.value = props.roles.meta.from - 1;
+    last.value = props.roles.meta.last_page;
+    totalRecords.value = props.roles.meta.total;
+    perPage.value = props.roles.meta.per_page;
     searchKeyword.value = props.search;
 }
 
@@ -78,15 +85,15 @@ const handlePageUpdate = (page) => {
 
 watch(searchKeyword, debounce((value) => {
     loadData(currentPage, value);
-}, 1000));
+}, 500));
 
 const loadData = (currentPage, searchKeyword = '') => {
     const urlData = {
         page: currentPage.value,
-        search: searchKeyword,
+        search: searchKeyword
     }
 
-    router.get('/admin/veterinarians', urlData, {
+    router.get('/admin/roles', urlData, {
         preserveScroll: true,
         preserveState: true,
         onBefore: () => {
@@ -95,7 +102,7 @@ const loadData = (currentPage, searchKeyword = '') => {
         onSuccess: () => {
             reloadDataTable();
             dataTableLoading.value = false;
-        },
+        }
     });
 }
 
@@ -106,6 +113,7 @@ const openNew = () => {
 };
 
 const hideDialog = () => {
+    selectedPermissions.value = [];
     recordDialog.value = false;
     submitted.value = false;
 };
@@ -113,27 +121,31 @@ const hideDialog = () => {
 const saveRecord = () => {
     submitted.value = true;
 
-    if (record.value.last_name && record.value.first_name && record.value.email && record.value.contact_number && record.value.specialization && record.value.status) {
+    if (record.value.name && record.value.name.trim() && record.value.guard_name) {
         const postData = {
-            last_name: record.value.last_name,
-            first_name: record.value.first_name,
-            email: record.value.email,
-            contact_number: record.value.contact_number,
-            specialization: record.value.specialization,
-            status: record.value.status,
+            name: record.value.name,
+            guard_name: record.value.guard_name,
+            permissions: selectedPermissions.value || []
         };
 
         if (record.value.id) {
-            router.put(`/admin/veterinarians/${record.value.id}`, postData, {
+            router.put(`/admin/roles/${record.value.id}`, postData, {
                 onSuccess: () => {
                     reloadDataTable();
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
                     recordDialog.value = false;
                     record.value = {};
                 },
+                onError: errors => {
+                    if (errors) {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Validation failed', life: 3000 });
+                    } else {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Oops, something went wrong. Please try again later.', life: 3000 });
+                    }
+                },
             });
         } else {
-            router.post('/admin/veterinarians', postData, {
+            router.post('/admin/roles', postData, {
                 onSuccess: () => {
                     reloadDataTable();
                     toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
@@ -154,6 +166,7 @@ const saveRecord = () => {
 
 const editRecord = (recordData) => {
     record.value = { ...recordData };
+    selectedPermissions.value = recordData.permissions;
     recordDialog.value = true;
 };
 
@@ -165,7 +178,7 @@ const confirmDeleteRecord = (data) => {
 const deleteRecord = () => {
     deleteRecordDialog.value = false;
 
-    router.delete(`/admin/veterinarians/${record.value.id}`, {
+    router.delete(`/admin/roles/${record.value.id}`, {
         onSuccess: () => {
             reloadDataTable();
             toast.add({ severity: 'success', summary: 'Successful', detail: props.flash.success, life: 3000 });
@@ -213,7 +226,7 @@ const deleteRecord = () => {
           <template #header>
             <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
               <h5 class="m-0">
-                Manage Veterinarians
+                Manage Roles
               </h5>
               <span class="block mt-2 md:mt-0 p-input-icon-left">
                 <i class="pi pi-search" />
@@ -242,67 +255,23 @@ const deleteRecord = () => {
             </template>
           </Column>
           <Column
-            field="last_name"
-            header="Last Name"
+            field="name"
+            header="Name"
             header-style="width:15%; min-width:10rem;"
           >
             <template #body="slotProps">
-              <span class="p-column-title">Last Name</span>
-              {{ slotProps.data.last_name }}
+              <span class="p-column-title">Name</span>
+              {{ slotProps.data.name }}
             </template>
           </Column>
           <Column
-            field="first_name"
-            header="First Name"
+            field="name"
+            header="Guard"
             header-style="width:15%; min-width:10rem;"
           >
             <template #body="slotProps">
-              <span class="p-column-title">First Name</span>
-              {{ slotProps.data.first_name }}
-            </template>
-          </Column>
-
-          <Column
-            field="email"
-            header="Email"
-            header-style="width:15%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Email</span>
-              {{ slotProps.data.email }}
-            </template>
-          </Column>
-          <Column
-            field="contact_no"
-            header="Contact Number"
-            header-style="width:15%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Contact Number</span>
-              {{ slotProps.data.contact_number }}
-            </template>
-          </Column>
-          <Column
-            field="specialization"
-            header="Specialization"
-            header-style="width:15%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Specialization</span>
-              {{ slotProps.data.specialization }}
-            </template>
-          </Column>
-          <Column
-            field="status"
-            header="Status"
-            header-style="width:10%; min-width:10rem;"
-          >
-            <template #body="slotProps">
-              <span class="p-column-title">Status</span>
-              <span
-                :class="'product-badge status-' + (slotProps.data.status ? slotProps.data.status.toLowerCase() : '')"
-              >{{
-                slotProps.data.status }}</span>
+              <span class="p-column-title">Guard</span>
+              {{ slotProps.data.guard_name }}
             </template>
           </Column>
           <Column header-style="width:5%; min-width:10rem;">
@@ -324,125 +293,75 @@ const deleteRecord = () => {
         <Dialog
           v-model:visible="recordDialog"
           :style="{ width: '450px' }"
-          header="Veterinarian details"
+          header="Role details"
           :modal="true"
           @hide="hideDialog"
-          close-on-escape
+          close-on-escape 
           class="p-fluid"
         >
           <div class="field">
-            <label for="last_name">Last Name</label>
+            <label for="name">Name</label>
             <InputText
-              id="last_name"
-              v-model.trim="record.last_name"
-              name="last_name"
+              id="name"
+              v-model.trim="record.name"
+              name="name"
               autofocus
               autocomplete="true"
-              :class="{ 'p-invalid': submitted && (errors && errors.last_name || !record.last_name) }"
+              :class="{ 'p-invalid': submitted && (errors && errors.name || !record.name) }"
             />
             <small
               class="p-error"
-              v-if="submitted && errors && errors.last_name"
-            >{{ errors.last_name }}</small>
+              v-if="submitted && errors && errors.name"
+            >{{ errors.name }}</small>
             <small
               class="p-error"
-              v-if="submitted && !record.last_name"
-            >Last Name is required</small>
+              v-if="submitted && !record.name"
+            >Name is required</small>
           </div>
           <div class="field">
-            <label for="first_name">First Name</label>
-            <InputText
-              id="first_name"
-              v-model.trim="record.first_name"
-              name="first_name"
-              autocomplete="true"
-              :class="{ 'p-invalid': submitted && (errors && errors.first_name || !record.first_name) }"
-            />
-            <small
-              class="p-error"
-              v-if="submitted && errors && errors.first_name"
-            >{{ errors.first_name }}</small>
-            <small
-              class="p-error"
-              v-if="submitted && !record.first_name"
-            >First Name is required</small>
-          </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <InputText
-              id="email"
-              v-model.trim="record.email"
-              name="email"
-              autocomplete="true"
-              :class="{ 'p-invalid': submitted && (errors && errors.email || !record.email) }"
-            />
-            <small
-              class="p-error"
-              v-if="submitted && errors && errors.email"
-            >{{ errors.email }}</small>
-            <small
-              class="p-error"
-              v-if="submitted && !record.email"
-            >Email is required</small>
-          </div>
-          <div class="field">
-            <label for="contact_number">Contact Number</label>
-            <InputText
-              id="contact_number"
-              v-model.trim="record.contact_number"
-              name="name"
-              autocomplete="true"
-              :class="{ 'p-invalid': submitted && (errors && errors.contact_number || !record.contact_number) }"
-            />
-            <small
-              class="p-error"
-              v-if="submitted && errors && errors.contact_number"
-            >{{ errors.contact_number }}</small>
-            <small
-              class="p-error"
-              v-if="submitted && !record.contact_number"
-            >Contact Number is required</small>
-          </div>
-          <div class="field">
-            <label for="specialization">Specialization</label>
-            <Textarea
-              id="specialization"
-              v-model="record.specialization"
-              name="specialization"
-              rows="5"
-              cols="20"
-              :class="{ 'p-invalid': submitted && (errors && errors.specialization || !record.specialization) }"
-            />
-            <small
-              class="p-error"
-              v-if="submitted && errors && errors.specialization"
-            >{{ errors.specialization
-            }}</small>
-            <small
-              class="p-error"
-              v-if="submitted && !record.specialization"
-            >Specialization is required</small>
-          </div>
-          <div class="field">
-            <label>Status</label>
+            <label>Guard Type</label>
             <SelectButton
-              v-model="record.status"
-              :options="statuses"
+              v-model="record.guard_name"
+              :options="guards"
               id="status"
               name="status"
-              :class="{ 'p-invalid': submitted && (errors && errors.status || !record.status) }"
+              :class="{ 'p-invalid': submitted && (errors && errors.guard_name || !record.guard_name) }"
               aria-labelledby="basic"
             />
             <small
               class="p-error"
-              v-if="submitted && errors && errors.status"
-            >{{ errors.status }}</small>
+              v-if="submitted && errors && errors.guard_name"
+            >{{ errors.guard_name }}</small>
             <small
               class="p-error"
-              v-if="submitted && !record.status"
-            >Status is required</small>
+              v-if="submitted && !record.guard_name"
+            >Guard type is required</small>
           </div>
-
+          <div class="field">
+            <label>Permissions</label>
+            <MultiSelect
+              v-model="selectedPermissions"
+              :options="permissions"
+              display="chip"
+              filter
+              option-value="id"
+              option-label="name"
+              :max-selected-labels="3"
+              placeholder="Select"
+              class="w-full md:w-50rem"
+              :class="{ 'p-invalid': submitted && (errors && errors.permissions) }"
+            >
+              <template #header>
+                <div class="py-2 px-3">
+                  <b>{{ selectedPermissions ? selectedPermissions.length : 0 }}</b> item{{ (selectedPermissions ? selectedPermissions.length : 0) > 3 ? 's' : '' }} selected.
+                </div>
+              </template>
+            </MultiSelect>
+            <small
+              class="p-error"
+              v-if="submitted && errors && errors.permissions"
+            >{{ errors.permissions }}</small>
+          </div>
           <template #footer>
             <Button
               label="Cancel"
@@ -471,7 +390,7 @@ const deleteRecord = () => {
               class="pi pi-exclamation-triangle mr-3"
               style="font-size: 2rem"
             />
-            <span v-if="record">Are you sure you want to delete <b>{{ record.last_name }}, {{ record.first_name }}</b>?</span>
+            <span v-if="record">Are you sure you want to delete <b>{{ record.name }}</b>?</span>
           </div>
           <template #footer>
             <Button

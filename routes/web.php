@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SpecieTypeController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VeterinarianController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,8 +36,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     });
-    
+
     Route::resource('services', ServiceController::class);
     Route::resource('specieTypes', SpecieTypeController::class);
     Route::resource('veterinarians', VeterinarianController::class);
+    Route::resource('users', UserController::class);
+    Route::put('users/{user}/updatePermissions', [UserController::class, 'updatePermissions']);
+    Route::resource('roles', RoleController::class);
 });
