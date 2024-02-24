@@ -30,6 +30,7 @@ class UserRequest extends FormRequest
             'password' => 'required',
             'password_confirm' => 'required|same:password',
             'status' => Rule::enum(Status::class),
+            'role' => ['required', 'exists:roles,id']
         ];
 
         if ($this->isMethod('PUT')) {

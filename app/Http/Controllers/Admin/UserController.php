@@ -60,7 +60,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->syncPermissions([1,3]);
+        //
     }
 
     /**
@@ -77,6 +77,8 @@ class UserController extends Controller
     public function update(UserRequest $request, User $user)
     {
         $user->update($request->validated());
+
+        $user->syncRoles([$request->role]);
 
         return redirect()->back()->with('flash', [
             'success' => 'User has been updated'
