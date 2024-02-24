@@ -39,7 +39,7 @@ const props = defineProps({
         return {}
       }
     },
-    searchKeyword: {
+    search: {
       type: String,
       default: ''
     }
@@ -61,7 +61,7 @@ const first = ref(0);
 const last = ref(0);
 const totalRecords = ref(0);
 const perPage = ref(0);
-const search = ref('');
+const searchKeyword = ref('');
 const dataTableLoading = ref(false);
 const selectedPermissions = ref([]);
 
@@ -75,15 +75,15 @@ const reloadDataTable = () => {
     last.value = props.roles.meta.last_page;
     totalRecords.value = props.roles.meta.total;
     perPage.value = props.roles.meta.per_page;
-    search.value = props.search;
+    searchKeyword.value = props.search;
 }
 
 const handlePageUpdate = (page) => {
     currentPage.value = page.page += 1;
-    loadData(currentPage, search.value);
+    loadData(currentPage, searchKeyword.value);
 }
 
-watch(search, debounce((value) => {
+watch(searchKeyword, debounce((value) => {
     loadData(currentPage, value);
 }, 500));
 
@@ -231,7 +231,7 @@ const deleteRecord = () => {
               <span class="block mt-2 md:mt-0 p-input-icon-left">
                 <i class="pi pi-search" />
                 <InputText
-                  v-model="search"
+                  v-model="searchKeyword"
                   placeholder="Search..."
                   id="search"
                   name="search"
