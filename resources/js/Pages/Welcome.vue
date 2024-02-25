@@ -129,34 +129,30 @@ const routeUserByAccountType = () => {
         </div>
       </div>
 
-      <div id="hero" class="grid grid-nogutter surface-section text-800">
-        <div
-          class="col-12 md:col-12 p-6 text-center md:text-left flex align-items-center "
-          style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%); clip-path: ellipse(150% 87% at 93% 13%)"
-        >
-          <section>
-            <span class="block text-6xl font-bold mb-1">Discover Comprehensive</span>
-            <div class="text-6xl text-primary font-bold mb-3">
-              Pet Care Services
-            </div>
-            <p class="mt-0 mb-4 text-700 line-height-3">
-              Explore a range of specialized services tailored to meet the unique needs of your beloved pets. From veterinary care to grooming, we ensure top-notch care for your furry companions.
-            </p>
-            
-            <Button
-              label="Book Appointment"
-              type="button"
-              class="mr-3 p-button-raised"
-            />
-          </section>
-          <div class="col-12 md:col-6 overflow-hidden">
-            <img
-              src="/demo/images/landing/screen-1.png"
-              alt="Image"
-              class="md:ml-auto block md:h-full"
-              style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%)"
-            >
-          </div>
+      <div
+        id="hero"
+        class="flex flex-column pt-4 px-4 lg:px-8 overflow-hidden"
+        style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%); clip-path: ellipse(150% 87% at 93% 13%)"
+      >
+        <div class="mx-4 md:mx-8 mt-0 md:mt-4">
+          <h1 class="text-6xl font-bold text-gray-900 line-height-2">
+            <span class="font-light block">Discover Comprehensive</span> Pet Care Services
+          </h1>
+          <p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">
+            Explore a range of specialized services tailored to meet the unique needs of your beloved pets. From veterinary care to grooming, we ensure top-notch care for your furry companions.
+          </p>
+          <Button
+            label="Book Appointment"
+            type="button"
+            class="mr-3 p-button-raised"
+          />
+        </div>
+        <div class="flex justify-content-center md:justify-content-end">
+          <img
+            src="/demo/images/landing/screen-1.png"
+            alt="Hero Image"
+            class="w-9 md:w-auto"
+          >
         </div>
       </div>
 
