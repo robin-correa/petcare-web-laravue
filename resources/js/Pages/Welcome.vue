@@ -1,14 +1,48 @@
 <script setup>
-import AppConfig from '@/sakai-vue-master/layout/AppConfig.vue';
 import Button from "primevue/button";
 import Divider from "primevue/divider";
-import { Link } from '@inertiajs/vue3';
+import SelectButton from "primevue/selectbutton";
+import Dialog from "primevue/dialog";
+import { router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+const statuses = ref(['Pet Owner', 'Vet']);
+
+const showLoginSignupDialog = ref(false);
+const selectedAccountType = ref('');
 
 const smoothScroll = (id) => {
-    document.querySelector(id).scrollIntoView({
-        behavior: 'smooth'
-    });
+  document.querySelector(id).scrollIntoView({
+    behavior: 'smooth'
+  });
 };
+
+const showLoginDialog = () => {
+  showLoginSignupDialog.value = true;
+};
+
+const hideLoginSignupDialog = () => {
+  showLoginSignupDialog.value = false;
+  selectedAccountType.value = '';
+}
+
+const routeUserByAccountType = () => {
+  let accountType = selectedAccountType.value == 'Pet Owner' ? 'customer' : 'veterinarian';
+
+  router.visit('login', {
+    data: {
+      accountType: accountType
+    },
+    onSuccess: () => {
+      showLoginSignupDialog.value = false;
+    },
+    onError: () => {
+      selectedAccountType.value = '';
+      showLoginSignupDialog.value = false;
+    },
+  });
+}
+
 </script>
 
 <template>
@@ -17,7 +51,9 @@ const smoothScroll = (id) => {
       id="home"
       class="landing-wrapper overflow-hidden"
     >
-      <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static mb-3">
+      <div
+        class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static mb-3"
+      >
         <a
           class="flex align-items-center"
           href="#"
@@ -54,7 +90,7 @@ const smoothScroll = (id) => {
                 class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple"
                 v-ripple
               >
-                <span>About Us</span>
+                <span>Our Services</span>
               </a>
             </li>
             <li>
@@ -63,7 +99,7 @@ const smoothScroll = (id) => {
                 class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple"
                 v-ripple
               >
-                <span>Our Services</span>
+                <span>About Us</span>
               </a>
             </li>
             <li>
@@ -75,56 +111,52 @@ const smoothScroll = (id) => {
                 <span>Our Team</span>
               </a>
             </li>
-            <li>
-              <a
-                @click="smoothScroll('#pricing')"
-                class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple"
-                v-ripple
-              >
-                <span>Contact Us</span>
-              </a>
-            </li>
           </ul>
-          <div class="flex justify-content-between lg:block border-top-1 lg:border-top-none surface-border py-3 lg:py-0 mt-3 lg:mt-0">
-            <Link href="/login">
-              <Button
-                label="Login"
-                class="p-button-text p-button-rounded border-none font-light line-height-2 text-blue-500"
-              />
-            </Link>
-            <Link href="/admin/dashboard">
-              <Button
-                label="Dashboard"
-                class="p-button-rounded border-none ml-5 font-light text-white line-height-2 bg-blue-500"
-              />
-            </Link>
+          <div
+            class="flex justify-content-between lg:block border-top-1 lg:border-top-none surface-border py-3 lg:py-0 mt-3 lg:mt-0"
+          >
+            <Button
+              label="Login or Sign up"
+              class="p-button-text p-button-rounded border-none font-light line-height-2 text-teal"
+              @click="showLoginDialog"
+            />
+            <Button
+              label="Enquire Now"
+              type="button"
+              class="p-button-outlined"
+            />
           </div>
         </div>
       </div>
 
-      <div
-        id="hero"
-        class="flex flex-column pt-4 px-4 lg:px-8 overflow-hidden"
-        style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%); clip-path: ellipse(150% 87% at 93% 13%)"
-      >
-        <div class="mx-4 md:mx-8 mt-0 md:mt-4">
-          <h1 class="text-6xl font-bold text-gray-900 line-height-2">
-            <span class="font-light block">Discover Comprehensive</span>Pet Care Services
-          </h1>
-          <p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">
-            Explore a range of specialized services tailored to meet the unique needs of your beloved pets. From veterinary care to grooming, we ensure top-notch care for your furry companions.
-          </p>
-          <Button
-            label="Get Started"
-            class="p-button-rounded text-xl border-none mt-5 bg-blue-500 font-normal text-white line-height-3 px-3"
-          />
-        </div>
-        <div class="flex justify-content-center md:justify-content-end">
-          <img
-            src="/demo/images/landing/screen-1.png"
-            alt="Hero Image"
-            class="w-9 md:w-auto"
-          >
+      <div id="hero" class="grid grid-nogutter surface-section text-800">
+        <div
+          class="col-12 md:col-12 p-6 text-center md:text-left flex align-items-center "
+          style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, rgb(238, 239, 175) 0%, rgb(195, 227, 250) 100%); clip-path: ellipse(150% 87% at 93% 13%)"
+        >
+          <section>
+            <span class="block text-6xl font-bold mb-1">Discover Comprehensive</span>
+            <div class="text-6xl text-primary font-bold mb-3">
+              Pet Care Services
+            </div>
+            <p class="mt-0 mb-4 text-700 line-height-3">
+              Explore a range of specialized services tailored to meet the unique needs of your beloved pets. From veterinary care to grooming, we ensure top-notch care for your furry companions.
+            </p>
+            
+            <Button
+              label="Book Appointment"
+              type="button"
+              class="mr-3 p-button-raised"
+            />
+          </section>
+          <div class="col-12 md:col-6 overflow-hidden">
+            <img
+              src="/demo/images/landing/screen-1.png"
+              alt="Image"
+              class="md:ml-auto block md:h-full"
+              style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%)"
+            >
+          </div>
         </div>
       </div>
 
@@ -137,7 +169,8 @@ const smoothScroll = (id) => {
             <h2 class="text-900 font-normal mb-2">
               Services
             </h2>
-            <span class="text-600 text-2xl">Experience the Ultimate Pet Care Journey with PetCare. Start Exploring Today!</span>
+            <span class="text-600 text-2xl">Experience the Ultimate Pet Care Journey with PetCare. Start Exploring
+              Today!</span>
           </div>
 
           <div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
@@ -339,96 +372,28 @@ const smoothScroll = (id) => {
           </div>
 
           <div
+            id="highlights"
             class="col-12 mt-8 mb-8 p-2 md:p-8"
             style="border-radius: 20px; background: linear-gradient(0deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #efe1af 0%, #c3dcfa 100%)"
           >
             <div class="flex flex-column justify-content-center align-items-center text-center px-3 py-3 md:py-0">
               <h3 class="text-gray-900 mb-2">
-                Joséphine Miller
+                Robin Correa
               </h3>
-              <span class="text-gray-600 text-2xl">Peak Interactive</span>
+              <span class="text-gray-600 text-2xl">Software Developer</span>
               <p
                 class="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4"
                 style="max-width: 800px"
               >
-                “Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.”
+                Experienced software developer with over 7 years of expertise in multi-platform environments, object-oriented application development, and multi-tiered web application design and development. Holder of two AWS certifications - AWS Certified Developer and AWS Certified Practitioner, demonstrating proficiency in cloud technologies. Skilled in utilizing cutting-edge development tools and practices, effective self-management for independent projects, and a valuable collaborator within productive teams.
               </p>
               <img
-                src="/demo/images/landing/peak-logo.svg"
+                src="/demo/images/landing/robin_logo.png"
                 class="mt-4"
-                alt="Company logo"
+                width="200px"
+                alt="Robin Correa"
               >
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        id="highlights"
-        class="py-4 px-4 lg:px-8 mx-0 my-6 lg:mx-8"
-      >
-        <div class="text-center">
-          <h2 class="text-900 font-normal mb-2">
-            Powerful Everywhere
-          </h2>
-          <span class="text-600 text-2xl">Amet consectetur adipiscing elit...</span>
-        </div>
-
-        <div class="grid mt-8 pb-2 md:pb-8">
-          <div
-            class="flex justify-content-center col-12 lg:col-6 bg-purple-100 p-0 flex-order-1 lg:flex-order-0"
-            style="border-radius: 8px"
-          >
-            <img
-              src="/demo/images/landing/mockup.svg"
-              class="w-11"
-              alt="mockup mobile"
-            >
-          </div>
-
-          <div class="col-12 lg:col-6 my-auto flex flex-column lg:align-items-end text-center lg:text-right">
-            <div
-              class="flex align-items-center justify-content-center bg-purple-200 align-self-center lg:align-self-end"
-              style="width: 4.2rem; height: 4.2rem; border-radius: 10px"
-            >
-              <i class="pi pi-fw pi-mobile text-5xl text-purple-700" />
-            </div>
-            <h2 class="line-height-1 text-900 text-4xl font-normal">
-              Congue Quisque Egestas
-            </h2>
-            <span
-              class="text-700 text-2xl line-height-3 ml-0 md:ml-2"
-              style="max-width: 650px"
-            >Lectus arcu bibendum at varius vel pharetra vel turpis nunc. Eget aliquet nibh praesent tristique magna sit amet purus gravida. Sit amet mattis vulputate enim nulla aliquet.</span>
-          </div>
-        </div>
-
-        <div class="grid my-8 pt-2 md:pt-8">
-          <div class="col-12 lg:col-6 my-auto flex flex-column text-center lg:text-left lg:align-items-start">
-            <div
-              class="flex align-items-center justify-content-center bg-yellow-200 align-self-center lg:align-self-start"
-              style="width: 4.2rem; height: 4.2rem; border-radius: 10px"
-            >
-              <i class="pi pi-fw pi-desktop text-5xl text-yellow-700" />
-            </div>
-            <h2 class="line-height-1 text-900 text-4xl font-normal">
-              Celerisque Eu Ultrices
-            </h2>
-            <span
-              class="text-700 text-2xl line-height-3 mr-0 md:mr-2"
-              style="max-width: 650px"
-            >Adipiscing commodo elit at imperdiet dui. Viverra nibh cras pulvinar mattis nunc sed blandit libero. Suspendisse in est ante in. Mauris pharetra et ultrices neque ornare aenean euismod elementum nisi.</span>
-          </div>
-
-          <div
-            class="flex justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6 bg-yellow-100 p-0"
-            style="border-radius: 8px"
-          >
-            <img
-              src="/demo/images/landing/mockup-desktop.svg"
-              class="w-11"
-              alt="mockup"
-            >
           </div>
         </div>
       </div>
@@ -589,8 +554,7 @@ const smoothScroll = (id) => {
               <img
                 src="/layout/images/logo.png"
                 alt="footer sections"
-                width="50"
-                height="50"
+                width="100"
                 class="mr-2"
               >
               <h4 class="font-medium text-3xl text-900">PETCARE</h4>
@@ -646,5 +610,24 @@ const smoothScroll = (id) => {
       </div>
     </div>
   </div>
-  <AppConfig simple />
+
+  <Dialog
+    v-model:visible="showLoginSignupDialog"
+    modal
+    header="Login or Sign up as"
+    close-on-escape
+    @hide="hideLoginSignupDialog"
+    :style="{ width: '25rem' }"
+  >
+    <div class="flex justify-content-center">
+      <SelectButton
+        v-model="selectedAccountType"
+        :options="statuses"
+        @change="routeUserByAccountType"
+        id="accountType"
+        name="accountType"
+        aria-labelledby="basic"
+      />
+    </div>
+  </Dialog>
 </template>

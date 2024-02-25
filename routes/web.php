@@ -20,21 +20,12 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Landing');
-});
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-});
-
-
-Route::get('/login', function () {
-    return Inertia::render('Login');
+    return Inertia::render('Welcome');
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+    Route::get('dashboard', function () {
+        return Inertia::render('Admin/Dashboard');
     });
 
     Route::resource('services', ServiceController::class);
