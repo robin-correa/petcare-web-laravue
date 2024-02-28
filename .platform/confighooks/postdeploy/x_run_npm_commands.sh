@@ -1,2 +1,4 @@
-sudo npm install
-sudo npm run build
+#!/bin/bash
+
+npm install
+npm run build
