@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ServiceSeeder::class,
             SpecieTypeSeeder::class,
-            VeterinarianSeeder::class,
             RolesAndPermissionsSeeder::class
         ]);
     }
