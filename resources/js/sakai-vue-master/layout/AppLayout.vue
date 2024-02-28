@@ -57,19 +57,22 @@ const isOutsideClicked = (event) => {
 </script>
 
 <template>
-    <div class="layout-wrapper" :class="containerClass">
-        <app-topbar></app-topbar>
-        <div class="layout-sidebar">
-            <app-sidebar></app-sidebar>
-        </div>
-        <div class="layout-main-container">
-            <div class="layout-main">
-                <slot></slot>
-            </div>
-            <app-footer></app-footer>
-        </div>
-        <div class="layout-mask"></div>
+  <div
+    class="layout-wrapper"
+    :class="containerClass"
+  >
+    <app-topbar />
+    <div class="layout-sidebar">
+      <app-sidebar />
     </div>
+    <div class="layout-main-container">
+      <div class="layout-main">
+        <slot />
+      </div>
+      <app-footer />
+    </div>
+    <div class="layout-mask" />
+  </div>
 </template>
 
 <style lang="scss" scoped></style>

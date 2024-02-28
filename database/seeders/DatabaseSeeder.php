@@ -3,6 +3,11 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use Database\Seeders\Admin\RolesAndPermissionsSeeder;
+use Database\Seeders\Admin\ServiceSeeder;
+use Database\Seeders\Admin\SpecieTypeSeeder;
+use Database\Seeders\Admin\VeterinarianSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +17,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $this->call([
+            ServiceSeeder::class,
+            SpecieTypeSeeder::class,
+            VeterinarianSeeder::class,
+            RolesAndPermissionsSeeder::class
+        ]);
     }
 }
